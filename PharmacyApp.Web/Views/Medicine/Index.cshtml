@@ -1,0 +1,40 @@
+﻿@model IEnumerable<PharmacyApp.Domain.Entities.Medicine>
+
+@{
+    ViewData["Title"] = "Medicines";
+}
+
+<h2>Medicines</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Icon</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var medicine in Model)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(medicine.IconUrl))
+                    {
+                        <img src="@medicine.IconUrl" alt="@medicine.Name" style="width: 50px; height: 50px;" />
+                    }
+                </td>
+                <td>@medicine.Name</td>
+                <td>@medicine.Description</td>
+                <td>@medicine.Price.ToString("C")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@medicine.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@medicine.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@medicine.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

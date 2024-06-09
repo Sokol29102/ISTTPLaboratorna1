@@ -32,6 +32,7 @@ namespace PharmacyApp.Infrastructure.Data
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Description).HasMaxLength(500);
                 entity.Property(e => e.Price).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.IconUrl).HasMaxLength(500);
             });
 
             modelBuilder.Entity<Disease>(entity =>

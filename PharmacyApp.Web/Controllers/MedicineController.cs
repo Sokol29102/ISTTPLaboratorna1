@@ -1,37 +1,65 @@
-﻿// MedicinesController.cs
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PharmacyApp.Domain.Entities;
-using PharmacyApp.Infrastructure.Data;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace PharmacyApp.Web.Controllers
 {
-	[ApiController]
-	[Route("api/[controller]")]
-    [Authorize]
-    public class MedicinesController : ControllerBase
-	{
-		private readonly PharmacyDbContext _context;
+    public class MedicineController : Controller
+    {
+        private readonly IDataStorage<Medicine> _medicineService;
 
-		public MedicinesController(PharmacyDbContext context)
-		{
-			_context = context;
-		}
+        public MedicineController(IDataStorage<Medicine> medicineService)
+        {
+            _medicineService = medicineService;
+        }
 
-		[HttpGet]
-		public IActionResult GetMedicines()
-		{
-			var medicines = _context.Medicines.ToList();
-			return Ok(medicines);
-		}
+        public async Task<IActionResult> Index()
+        {
+            var medicines = await _medicineService.GetAllAsync();
+            return View(medicines);
+        }
 
-		[HttpPost]
-		public IActionResult CreateMedicine([FromBody] Medicine medicine)
-		{
-			_context.Medicines.Add(medicine);
-			_context.SaveChanges();
-			return CreatedAtAction(nameof(GetMedicines), new { id = medicine.Id }, medicine);
-		}
-	}
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(Medicine model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                model.IconUrl = $"/images/medicines/{model.Name}.png";
+                await _medicineService.AddAsync(model);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var medicine = await _medicineService.GetAsync(id);
+            if (medicine == null)
+            {
+                return NotFound();
+            }
+            return View(medicine);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Medicine model)
+        {
+            if (ModelState.IsValid)
+            {
+            
+                model.IconUrl = $"/images/medicines/{model.Name}.png";
+                await _medicineService.UpdateAsync(model);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+        }
+    }
 }

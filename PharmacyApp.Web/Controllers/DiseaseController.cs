@@ -1,37 +1,61 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PharmacyApp.Domain.Entities;
-using PharmacyApp.Infrastructure.Data;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace PharmacyApp.Web.Controllers
 {
-	[ApiController]
-	[Route("api/[controller]")]
-    [Authorize]
-    public class DiseasesController : ControllerBase
-	{
-		private readonly PharmacyDbContext _context;
+    public class DiseaseController : Controller
+    {
+        private readonly IDataStorage<Disease> _diseaseService;
 
-		public DiseasesController(PharmacyDbContext context)
-		{
-			_context = context;
-		}
+        public DiseaseController(IDataStorage<Disease> diseaseService)
+        {
+            _diseaseService = diseaseService;
+        }
 
-		[HttpGet]
-		public IActionResult GetDiseases()
-		{
-			var diseases = _context.Diseases.ToList();
-			return Ok(diseases);
-		}
+        public async Task<IActionResult> Index()
+        {
+            var diseases = await _diseaseService.GetAllAsync();
+            return View(diseases);
+        }
 
-		[HttpPost]
-		public IActionResult CreateDisease([FromBody] Disease disease)
-		{
-			_context.Diseases.Add(disease);
-			_context.SaveChanges();
-			return CreatedAtAction(nameof(GetDiseases), new { id = disease.Id }, disease);
-		}
-	}
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(Disease model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _diseaseService.AddAsync(model);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var disease = await _diseaseService.GetAsync(id);
+            if (disease == null)
+            {
+                return NotFound();
+            }
+            return View(disease);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Disease model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _diseaseService.UpdateAsync(model);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+        }
+    }
 }

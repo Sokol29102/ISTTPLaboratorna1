@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 
-
 namespace PharmacyApp.Web.Controllers
 {
     [Authorize]
@@ -27,7 +26,6 @@ namespace PharmacyApp.Web.Controllers
             return View(users);
         }
 
-        [HttpGet]
         [HttpGet]
         public IActionResult Create()
         {
@@ -61,7 +59,6 @@ namespace PharmacyApp.Web.Controllers
             return View(model);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
@@ -74,7 +71,7 @@ namespace PharmacyApp.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(User model)
+        public async Task<IActionResult> Edit(User model, string password)
         {
             if (ModelState.IsValid)
             {
@@ -85,6 +82,12 @@ namespace PharmacyApp.Web.Controllers
                     user.Email = model.Email;
 
                     var result = await _userManager.UpdateAsync(user);
+                    if (!string.IsNullOrEmpty(password))
+                    {
+                        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                        await _userManager.ResetPasswordAsync(user, token, password);
+                    }
+
                     if (result.Succeeded)
                     {
                         await _userStorage.UpdateAsync(user);
