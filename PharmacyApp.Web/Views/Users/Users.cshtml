@@ -1,0 +1,63 @@
+﻿@model IEnumerable<PharmacyApp.Domain.Entities.User>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h2>Users</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User ID</th>
+            <th>User Name</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <button class="btn btn-primary" onclick="window.location.href='@Url.Action("Create", "Users")'">New User</button>
+</div>
+
+<div>
+    <h3>Edit User</h3>
+    <input type="text" id="editUserId" placeholder="Enter User ID" />
+    <button class="btn btn-warning" onclick="editUser()">Edit User</button>
+</div>
+
+<div>
+    <h3>Delete User</h3>
+    <input type="text" id="deleteUserId" placeholder="Enter User ID" />
+    <button class="btn btn-danger" onclick="deleteUser()">Delete User</button>
+</div>
+
+<script>
+    function editUser() {
+        var userId = document.getElementById("editUserId").value;
+        if (userId) {
+            window.location.href = '@Url.Action("Edit", "Users")/' + userId;
+        } else {
+            alert("Please enter a user ID.");
+        }
+    }
+
+    function deleteUser() {
+        var userId = document.getElementById("deleteUserId").value;
+        if (userId) {
+            window.location.href = '@Url.Action("Delete", "Users")/' + userId;
+        } else {
+            alert("Please enter a user ID.");
+        }
+    }
+</script>

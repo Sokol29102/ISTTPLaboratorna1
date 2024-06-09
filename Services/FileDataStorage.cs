@@ -1,70 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace PharmacyApp.Services
+public class FileDataStorage<T> : IDataStorage<T> where T : class
 {
-    public class FileDataStorage<T> : IDataStorage<T> where T : class
+    private readonly string _filePath;
+    private List<T> _items;
+
+    public FileDataStorage(string filePath)
     {
-        private readonly string _filePath;
+        _filePath = filePath;
+        _items = new List<T>();
 
-        public FileDataStorage(string filePath)
+        if (File.Exists(_filePath))
         {
-            _filePath = filePath;
-            if (!File.Exists(_filePath))
-            {
-                File.WriteAllText(_filePath, "[]");
-            }
+            var jsonData = File.ReadAllText(_filePath);
+            _items = JsonSerializer.Deserialize<List<T>>(jsonData) ?? new List<T>();
         }
+    }
 
-        public async Task<List<T>> GetAllAsync()
-        {
-            var jsonData = await File.ReadAllTextAsync(_filePath);
-            return JsonSerializer.Deserialize<List<T>>(jsonData);
-        }
+    public async Task<IEnumerable<T>> GetAllAsync()
+    {
+        return await Task.FromResult(_items);
+    }
 
-        public async Task<T> GetAsync(string id)
-        {
-            var items = await GetAllAsync();
-            return items.FirstOrDefault(x => x.GetType().GetProperty("Id").GetValue(x).ToString() == id);
-        }
+    public async Task<T> GetAsync(string id)
+    {
+        return await Task.FromResult(_items.FirstOrDefault(i => (i as dynamic).Id == id));
+    }
 
-        public async Task AddAsync(T item)
-        {
-            var items = await GetAllAsync();
-            items.Add(item);
-            await SaveAllAsync(items);
-        }
+    public async Task AddAsync(T item)
+    {
+        _items.Add(item);
+        await SaveAsync();
+    }
 
-        public async Task UpdateAsync(T item)
+    public async Task UpdateAsync(T item)
+    {
+        var existingItem = _items.FirstOrDefault(i => (i as dynamic).Id == (item as dynamic).Id);
+        if (existingItem != null)
         {
-            var items = await GetAllAsync();
-            var index = items.FindIndex(x => x.GetType().GetProperty("Id").GetValue(x).ToString() == item.GetType().GetProperty("Id").GetValue(item).ToString());
-            if (index >= 0)
-            {
-                items[index] = item;
-                await SaveAllAsync(items);
-            }
+            _items.Remove(existingItem);
+            _items.Add(item);
+            await SaveAsync();
         }
+    }
 
-        public async Task DeleteAsync(string id)
+    public async Task DeleteAsync(string id)
+    {
+        var item = _items.FirstOrDefault(i => (i as dynamic).Id == id);
+        if (item != null)
         {
-            var items = await GetAllAsync();
-            var item = items.FirstOrDefault(x => x.GetType().GetProperty("Id").GetValue(x).ToString() == id);
-            if (item != null)
-            {
-                items.Remove(item);
-                await SaveAllAsync(items);
-            }
+            _items.Remove(item);
+            await SaveAsync();
         }
+    }
 
-        private async Task SaveAllAsync(List<T> items)
-        {
-            var jsonData = JsonSerializer.Serialize(items, new JsonSerializerOptions { WriteIndented = true });
-            await File.WriteAllTextAsync(_filePath, jsonData);
-        }
+    private async Task SaveAsync()
+    {
+        var jsonData = JsonSerializer.Serialize(_items);
+        await File.WriteAllTextAsync(_filePath, jsonData);
     }
 }
