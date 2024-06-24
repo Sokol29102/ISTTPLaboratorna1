@@ -28,7 +28,7 @@ public class FileDataStorage<T> : IDataStorage<T> where T : class
 
     public async Task<T> GetAsync(string id)
     {
-        return await Task.FromResult(_items.FirstOrDefault(i => (i as dynamic).Id == id));
+        return await Task.FromResult(_items.FirstOrDefault(i => CompareId(i, id)));
     }
 
     public async Task AddAsync(T item)
@@ -62,5 +62,18 @@ public class FileDataStorage<T> : IDataStorage<T> where T : class
     {
         var jsonData = JsonSerializer.Serialize(_items);
         await File.WriteAllTextAsync(_filePath, jsonData);
+    }
+    private bool CompareId(T item, string id)
+    {
+        var itemId = (item as dynamic).Id;
+        if (itemId is int intId)
+        {
+            return intId == int.Parse(id);
+        }
+        if (itemId is string strId)
+        {
+            return strId == id;
+        }
+        throw new InvalidOperationException("Unsupported Id type");
     }
 }
