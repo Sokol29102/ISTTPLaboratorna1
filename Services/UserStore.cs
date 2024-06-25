@@ -14,7 +14,7 @@ public class UserStore : IUserStore<User>, IUserPasswordStore<User>, IUserEmailS
     public UserStore(IDataStorage<User> userStorage)
     {
         _userStorage = userStorage;
-        _users = _userStorage.GetAllAsync().Result.ToList(); // Load users from file storage and convert to List<User>
+        _users = _userStorage.GetAllAsync().Result.ToList();
     }
 
     public IQueryable<User> Users => _users.AsQueryable();
