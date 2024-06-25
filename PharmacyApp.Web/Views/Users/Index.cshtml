@@ -1,17 +1,17 @@
 ﻿@model IEnumerable<PharmacyApp.Domain.Entities.User>
 
 @{
-    ViewData["Title"] = "Users";
+    ViewData["Title"] = "Користувачі";
 }
 
-<h2>Users</h2>
+<h2>Користувачі</h2>
 
 <table class="table">
     <thead>
         <tr>
-            <th>User ID</th>
-            <th>User Name</th>
-            <th>Email</th>
+            <th>ID користувача</th>
+            <th>Логін</th>
+            <th>Електронна пошта</th>
         </tr>
     </thead>
     <tbody>
@@ -27,23 +27,23 @@
 </table>
 
 <div>
-    <button class="btn btn-primary" onclick="window.location.href='@Url.Action("Create", "Users")'">New User</button>
+    <button class="btn btn-primary" onclick="window.location.href='@Url.Action("Create", "Users")'">Створити користувача</button>
 </div>
 
 <div>
     <h3>Edit User</h3>
     <input type="text" id="editUserId" placeholder="Enter User ID" />
-    <button class="btn btn-warning" onclick="editUser()">Edit User</button>
+    <button class="btn btn-warning" onclick="editUser()">Редагувати користувача</button>
 </div>
 
 <div>
     <h3>Delete User</h3>
     <input type="text" id="deleteUserId" placeholder="Enter User ID" />
-    <button class="btn btn-danger" onclick="deleteUser()">Delete User</button>
+    <button class="btn btn-danger" onclick="deleteUser()">Видалити користувача</button>
 </div>
 
 <div>
-    <button class="btn btn-secondary" onclick="window.location.href='@Url.Action("UpdateList", "Users")'">Update List</button>
+    <button class="btn btn-secondary" onclick="window.location.href='@Url.Action("UpdateList", "Users")'">Оновити список</button>
 </div>
 
 <script>

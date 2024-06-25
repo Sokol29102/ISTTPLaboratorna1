@@ -1,18 +1,19 @@
 ﻿@model IEnumerable<PharmacyApp.Domain.Entities.Medicine>
 
 @{
-    ViewData["Title"] = "Medicines";
+    ViewData["Title"] = "Медикаменти";
 }
 
 <h2>Medicines</h2>
+<p><a class="btn btn-primary" asp-action="Create">Добавити медикамент</a></p>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Icon</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price</th>
+            <th>Зовнішній вигляд</th>
+            <th>Назва</th>
+            <th>Опис</th>
+            <th>Ціна</th>
             <th></th>
         </tr>
     </thead>
@@ -30,8 +31,8 @@
                 <td>@medicine.Description</td>
                 <td>@medicine.Price.ToString("C")</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@medicine.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@medicine.Id">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@medicine.Id">Змінити</a> |
+                    <a asp-action="Delete" asp-route-id="@medicine.Id">Видалити</a>
                 </td>
             </tr>
         }

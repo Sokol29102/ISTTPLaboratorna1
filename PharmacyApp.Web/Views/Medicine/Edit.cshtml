@@ -1,10 +1,10 @@
 ﻿@model PharmacyApp.Domain.Entities.Medicine
 
 @{
-    ViewData["Title"] = "Edit Medicine";
+    ViewData["Title"] = "Зміна медикаментів";
 }
 
-<h2>Edit Medicine</h2>
+<h2>Зміна медикаментів</h2>
 
 <form asp-action="Edit" method="post">
     <div class="form-group">
@@ -27,5 +27,5 @@
         <input asp-for="IconUrl" class="form-control" />
         <span asp-validation-for="IconUrl" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="submit" class="btn btn-primary">Зберегти</button>
 </form>

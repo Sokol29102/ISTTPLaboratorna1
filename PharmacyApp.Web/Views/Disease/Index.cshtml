@@ -1,16 +1,16 @@
 ﻿@model IEnumerable<PharmacyApp.Domain.Entities.Disease>
 
 @{
-    ViewData["Title"] = "Diseases";
+    ViewData["Title"] = "Хвороби";
 }
 
-<h2>Diseases</h2>
+<h2>Хвороби</h2>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Description</th>
+            <th>Назва</th>
+            <th>Опис</th>
             <th></th>
         </tr>
     </thead>
@@ -21,12 +21,12 @@
                 <td>@disease.Name</td>
                 <td>@disease.Description</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@disease.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@disease.Id">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@disease.Id">Змінити</a> |
+                    <a asp-action="Delete" asp-route-id="@disease.Id">Видалити</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<a asp-action="Create" class="btn btn-primary">Create New Disease</a>
+<a asp-action="Create" class="btn btn-primary">Добавити нову хворобу</a>
